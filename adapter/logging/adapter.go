@@ -85,8 +85,10 @@ func (a *loggingAdapter) Log(lvl level.LogLevel, format string, args ...interfac
 
 	switch lvl {
 	case level.EMERGENCY:
+		// TODO: Handle this level once a generic log method is in the logging.Logger
 		fallthrough
 	case level.ALERT:
+		// TODO: Handle this level once a generic log method is in the logging.Logger
 		fallthrough
 	case level.CRITICAL:
 		a.adaptee.Critical(format, args)
