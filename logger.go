@@ -26,7 +26,3 @@ type Logger interface {
 
 	Log(level.LogLevel, string, ...interface{})
 }
-
-/**
- * Functions
- */
