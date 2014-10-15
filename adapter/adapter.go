@@ -7,7 +7,7 @@
 package adapter
 
 import (
-	"../"
+	"github.com/Rican7/commonlog"
 )
 
 /**

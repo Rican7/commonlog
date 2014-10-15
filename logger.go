@@ -7,7 +7,7 @@
 package commonlog
 
 import (
-	"./level"
+	"github.com/Rican7/commonlog/level"
 )
 
 /**

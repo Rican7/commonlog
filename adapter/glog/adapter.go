@@ -7,8 +7,8 @@
 package glog
 
 import (
-	"../"
-	"../../level"
+	"github.com/Rican7/commonlog/adapter"
+	"github.com/Rican7/commonlog/level"
 	"github.com/golang/glog"
 )
 

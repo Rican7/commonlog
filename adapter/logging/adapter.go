@@ -7,8 +7,8 @@
 package logging
 
 import (
-	"../"
-	"../../level"
+	"github.com/Rican7/commonlog/adapter"
+	"github.com/Rican7/commonlog/level"
 	logging "github.com/op/go-logging"
 )
 
