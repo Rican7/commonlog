@@ -44,42 +44,42 @@ func (a *logAdapter) Adaptee() interface{} {
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Emergency(format string, args ...interface{}) {
-	a.Log(level.EMERGENCY, format, args)
+	a.Log(level.EMERGENCY, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Alert(format string, args ...interface{}) {
-	a.Log(level.ALERT, format, args)
+	a.Log(level.ALERT, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Critical(format string, args ...interface{}) {
-	a.Log(level.CRITICAL, format, args)
+	a.Log(level.CRITICAL, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Error(format string, args ...interface{}) {
-	a.Log(level.ERROR, format, args)
+	a.Log(level.ERROR, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Warning(format string, args ...interface{}) {
-	a.Log(level.WARNING, format, args)
+	a.Log(level.WARNING, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Notice(format string, args ...interface{}) {
-	a.Log(level.NOTICE, format, args)
+	a.Log(level.NOTICE, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Info(format string, args ...interface{}) {
-	a.Log(level.INFO, format, args)
+	a.Log(level.INFO, format, args...)
 }
 
 // Convenient alias for logAdapter.Log()
 func (a *logAdapter) Debug(format string, args ...interface{}) {
-	a.Log(level.DEBUG, format, args)
+	a.Log(level.DEBUG, format, args...)
 }
 
 /**
@@ -100,10 +100,10 @@ func (a *logAdapter) Log(lvl level.LogLevel, format string, args ...interface{})
 		fallthrough
 	case level.CRITICAL:
 		// TODO: Handle this level once a generic log method is in the log.Logger
-		a.adaptee.Fatalf(format, args)
+		a.adaptee.Fatalf(format, args...)
 	case level.ERROR:
 		// TODO: Handle this level once a generic log method is in the log.Logger
-		a.adaptee.Panicf(format, args)
+		a.adaptee.Panicf(format, args...)
 	case level.WARNING:
 		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
@@ -114,6 +114,6 @@ func (a *logAdapter) Log(lvl level.LogLevel, format string, args ...interface{})
 		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.DEBUG:
-		a.adaptee.Printf(format, args)
+		a.adaptee.Printf(format, args...)
 	}
 }

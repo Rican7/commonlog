@@ -36,42 +36,42 @@ func (a *loggingAdapter) Adaptee() interface{} {
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Emergency(format string, args ...interface{}) {
-	a.Log(level.EMERGENCY, format, args)
+	a.Log(level.EMERGENCY, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Alert(format string, args ...interface{}) {
-	a.Log(level.ALERT, format, args)
+	a.Log(level.ALERT, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Critical(format string, args ...interface{}) {
-	a.Log(level.CRITICAL, format, args)
+	a.Log(level.CRITICAL, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Error(format string, args ...interface{}) {
-	a.Log(level.ERROR, format, args)
+	a.Log(level.ERROR, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Warning(format string, args ...interface{}) {
-	a.Log(level.WARNING, format, args)
+	a.Log(level.WARNING, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Notice(format string, args ...interface{}) {
-	a.Log(level.NOTICE, format, args)
+	a.Log(level.NOTICE, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Info(format string, args ...interface{}) {
-	a.Log(level.INFO, format, args)
+	a.Log(level.INFO, format, args...)
 }
 
 // Convenient alias for loggingAdapter.Log()
 func (a *loggingAdapter) Debug(format string, args ...interface{}) {
-	a.Log(level.DEBUG, format, args)
+	a.Log(level.DEBUG, format, args...)
 }
 
 /**
@@ -91,16 +91,16 @@ func (a *loggingAdapter) Log(lvl level.LogLevel, format string, args ...interfac
 		// TODO: Handle this level once a generic log method is in the logging.Logger
 		fallthrough
 	case level.CRITICAL:
-		a.adaptee.Critical(format, args)
+		a.adaptee.Critical(format, args...)
 	case level.ERROR:
-		a.adaptee.Error(format, args)
+		a.adaptee.Error(format, args...)
 	case level.WARNING:
-		a.adaptee.Warning(format, args)
+		a.adaptee.Warning(format, args...)
 	case level.NOTICE:
-		a.adaptee.Notice(format, args)
+		a.adaptee.Notice(format, args...)
 	case level.INFO:
-		a.adaptee.Info(format, args)
+		a.adaptee.Info(format, args...)
 	case level.DEBUG:
-		a.adaptee.Debug(format, args)
+		a.adaptee.Debug(format, args...)
 	}
 }
