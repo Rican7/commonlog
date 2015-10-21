@@ -1,7 +1,7 @@
 /**
  * CommonLog
  *
- * Copyright © 2014 Trevor N. Suarez (Rican7)
+ * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
 package glog
