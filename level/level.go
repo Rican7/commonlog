@@ -1,9 +1,10 @@
 /**
  * CommonLog
  *
- * Copyright © 2014 Trevor N. Suarez (Rican7)
+ * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package level defines the standard levels and their validations
 package level
 
 import (
@@ -14,8 +15,11 @@ import (
  * Types
  */
 
+// A LogLevel defines a logging severity level, akin to the severity levels used
+// in the Syslog standard. (https://tools.ietf.org/html/rfc5424)
 type LogLevel uint8
 
+// InvalidLogLevelError is an error representing an invalid log level occurrence
 type InvalidLogLevelError struct {
 	InvalidValue *LogLevel
 	InvalidName  *string
@@ -25,6 +29,8 @@ type InvalidLogLevelError struct {
  * Constants
  */
 
+// The log severity levels, as defined in RFC 5424 (Section 6.2.1):
+// https://tools.ietf.org/html/rfc5424#section-6.2.1
 const (
 	EMERGENCY LogLevel = iota
 	ALERT
@@ -40,7 +46,7 @@ const (
  * Variables
  */
 
-// Map a string name of our log levels to our constants
+// logLevels is a map of log level constants to their string names
 var logLevels = []string{
 	EMERGENCY: "EMERGENCY",
 	ALERT:     "ALERT",
@@ -56,7 +62,7 @@ var logLevels = []string{
  * Functions
  */
 
-// Get a log level value by a string name
+// NewLogLevel gets a log level value by a string name
 func NewLogLevel(name string) (LogLevel, error) {
 	// Cleanup the input
 	name = strings.TrimSpace(name)
@@ -70,7 +76,7 @@ func NewLogLevel(name string) (LogLevel, error) {
 	return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
 }
 
-// Check if a log level is valid based on the standard defined log levels
+// IsValid checks if a log level is valid based on the standard defined levels
 func (l *LogLevel) IsValid() (bool, error) {
 	if int(*l) >= len(logLevels) {
 		return false, &InvalidLogLevelError{InvalidValue: l}
@@ -79,7 +85,7 @@ func (l *LogLevel) IsValid() (bool, error) {
 	return true, nil
 }
 
-// Get the name of a given log level constant
+// String gets the name of a given log level constant
 func (l *LogLevel) String() string {
 	if valid, err := l.IsValid(); !valid {
 		return err.Error()
@@ -88,7 +94,7 @@ func (l *LogLevel) String() string {
 	return logLevels[*l]
 }
 
-// Define our Error interface handler for our InvalidLogLevelError
+// Error satisfies the error interface by returning a string message
 func (e InvalidLogLevelError) Error() string {
 	if nil != e.InvalidValue {
 		return "Invalid log level constant. Must be out of range."

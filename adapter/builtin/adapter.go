@@ -1,95 +1,66 @@
 /**
  * CommonLog
  *
- * Copyright © 2014 Trevor N. Suarez (Rican7)
+ * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package builtin defines an adapter using the built-in "log" package
 package builtin
 
 import (
-	"github.com/Rican7/commonlog/adapter"
-	"github.com/Rican7/commonlog/level"
 	"io"
 	"log"
+
+	"github.com/Rican7/commonlog"
+	"github.com/Rican7/commonlog/adapter"
+	"github.com/Rican7/commonlog/level"
 )
 
 /**
  * Types
  */
 
+type adapted log.Logger
+
 type logAdapter struct {
-	adaptee *log.Logger
+	commonlog.Logger
+	adaptee *adapted
 }
 
 /**
  * Functions
  */
 
-// Construct a new instance by injecting the adaptee
+// New constructs a new instance by injecting an adaptee
 func New(adaptee *log.Logger) adapter.LogAdapter {
-	return &logAdapter{adaptee}
+	adapted := adapted(*adaptee)
+
+	return &logAdapter{
+		commonlog.NewLogger(&adapted),
+		&adapted,
+	}
 }
 
-// Construct a new instance by building the adaptee
+// NewWithSetup constructs a new instance by building the adaptee
 func NewWithSetup(out io.Writer, prefix string, flag int) adapter.LogAdapter {
 	builtinLogger := log.New(out, prefix, flag)
 
-	return &logAdapter{builtinLogger}
+	return New(builtinLogger)
 }
 
-// Get the underyling adaptee
+// Adaptee gets the underyling adaptee
 func (a *logAdapter) Adaptee() interface{} {
 	return a.adaptee
 }
 
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Emergency(format string, args ...interface{}) {
-	a.Log(level.EMERGENCY, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Alert(format string, args ...interface{}) {
-	a.Log(level.ALERT, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Critical(format string, args ...interface{}) {
-	a.Log(level.CRITICAL, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Error(format string, args ...interface{}) {
-	a.Log(level.ERROR, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Warning(format string, args ...interface{}) {
-	a.Log(level.WARNING, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Notice(format string, args ...interface{}) {
-	a.Log(level.NOTICE, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Info(format string, args ...interface{}) {
-	a.Log(level.INFO, format, args...)
-}
-
-// Convenient alias for logAdapter.Log()
-func (a *logAdapter) Debug(format string, args ...interface{}) {
-	a.Log(level.DEBUG, format, args...)
-}
-
-/**
- * Log an error based on a specified level, a format, and a splat of arguments
- */
-func (a *logAdapter) Log(lvl level.LogLevel, format string, args ...interface{}) {
+// Log an error based on a specified level, a format, and a splat of arguments
+func (a *adapted) Log(lvl level.LogLevel, format string, args ...interface{}) {
 	// Validate the passed in level
 	if ok, err := lvl.IsValid(); !ok {
 		panic(err)
 	}
+
+	adaptee := (*log.Logger)(a)
 
 	switch lvl {
 	case level.EMERGENCY:
@@ -100,10 +71,10 @@ func (a *logAdapter) Log(lvl level.LogLevel, format string, args ...interface{})
 		fallthrough
 	case level.CRITICAL:
 		// TODO: Handle this level once a generic log method is in the log.Logger
-		a.adaptee.Fatalf(format, args...)
+		adaptee.Fatalf(format, args...)
 	case level.ERROR:
 		// TODO: Handle this level once a generic log method is in the log.Logger
-		a.adaptee.Panicf(format, args...)
+		adaptee.Panicf(format, args...)
 	case level.WARNING:
 		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
@@ -114,6 +85,6 @@ func (a *logAdapter) Log(lvl level.LogLevel, format string, args ...interface{})
 		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.DEBUG:
-		a.adaptee.Printf(format, args...)
+		adaptee.Printf(format, args...)
 	}
 }
