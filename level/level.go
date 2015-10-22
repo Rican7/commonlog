@@ -4,6 +4,7 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package level defines the standard levels and their validations
 package level
 
 import (

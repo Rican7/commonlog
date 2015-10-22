@@ -4,6 +4,8 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package commonlog defines interfaces for common logging interactions, with an
+// emphasis on Syslog level compatibility
 package commonlog
 
 import (

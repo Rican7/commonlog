@@ -4,6 +4,7 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package logging defines an adapter using the popular "go-logging" package
 package logging
 
 import (

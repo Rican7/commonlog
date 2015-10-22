@@ -4,6 +4,7 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package glog defines an adapter using the google "glog" package
 package glog
 
 import (

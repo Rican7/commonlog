@@ -4,6 +4,7 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package builtin defines an adapter using the built-in "log" package
 package builtin
 
 import (

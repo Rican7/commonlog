@@ -4,6 +4,8 @@
  * Copyright © 2015 Trevor N. Suarez (Rican7)
  */
 
+// Package adapter defines a common interface for adapters to implement the
+// commonlog.Logger with a self-awareness
 package adapter
 
 import (
