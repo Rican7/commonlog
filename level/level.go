@@ -77,21 +77,21 @@ func NewLogLevel(name string) (LogLevel, error) {
 }
 
 // IsValid checks if a log level is valid based on the standard defined levels
-func (l *LogLevel) IsValid() (bool, error) {
-	if int(*l) >= len(logLevels) {
-		return false, &InvalidLogLevelError{InvalidValue: l}
+func (l LogLevel) IsValid() (bool, error) {
+	if int(l) >= len(logLevels) {
+		return false, &InvalidLogLevelError{InvalidValue: &l}
 	}
 
 	return true, nil
 }
 
 // String gets the name of a given log level constant
-func (l *LogLevel) String() string {
+func (l LogLevel) String() string {
 	if valid, err := l.IsValid(); !valid {
 		return err.Error()
 	}
 
-	return logLevels[*l]
+	return logLevels[l]
 }
 
 // Error satisfies the error interface by returning a string message
