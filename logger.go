@@ -24,5 +24,9 @@ type Logger interface {
 	Info(string, ...interface{})
 	Debug(string, ...interface{})
 
+	LevelLogger
+}
+
+type LevelLogger interface {
 	Log(level.LogLevel, string, ...interface{})
 }
