@@ -1,0 +1,35 @@
+language: go
+
+go:
+    - 1.3
+    - 1.4
+    - 1.5
+    - tip
+
+sudo: false
+
+install:
+    # Get all imported packages
+    - go get -d -t ./...
+
+    # Basic go errors
+    - go build -v ./...
+
+    # Lint
+    - go get github.com/golang/lint/golint
+
+script:
+    # Check for format errors
+    - errors=$(gofmt -l .); echo $errors; (exit $([ "$errors" == "" ]))
+
+    # Lint
+    - errors=$(golint -min_confidence=0.3 ./...); echo $errors; (exit $([ "$errors" == "" ]))
+
+    # Run tests
+    - go test -v ./...
+
+matrix:
+    allow_failures:
+        - go: tip
+
+    fast_finish: true
