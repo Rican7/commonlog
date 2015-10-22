@@ -14,6 +14,8 @@ import (
  * Types
  */
 
+// LogAdapter is an interface defining a logger that is built from an underlying
+// adapter that can be accessed directly
 type LogAdapter interface {
 	commonlog.Logger
 

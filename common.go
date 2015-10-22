@@ -22,46 +22,49 @@ type common struct {
  * Functions
  */
 
+// NewLogger creates a new Logger instance from a LevelLogger by using a common
+// pass-through pattern for each separate level-specific logging method to the
+// passed LevelLogger.Log() method
 func NewLogger(l LevelLogger) Logger {
 	return &common{l}
 }
 
-// Convenient alias for logAdapter.Log()
+// Emergency calls the LevelLogger's Log() method with the level.Emergency level
 func (l *common) Emergency(format string, args ...interface{}) {
 	l.Log(level.EMERGENCY, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Alert calls the LevelLogger's Log() method with the level.Alert level
 func (l *common) Alert(format string, args ...interface{}) {
 	l.Log(level.ALERT, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Critical calls the LevelLogger's Log() method with the level.Critical level
 func (l *common) Critical(format string, args ...interface{}) {
 	l.Log(level.CRITICAL, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Error calls the LevelLogger's Log() method with the level.Error level
 func (l *common) Error(format string, args ...interface{}) {
 	l.Log(level.ERROR, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Warning calls the LevelLogger's Log() method with the level.Warning level
 func (l *common) Warning(format string, args ...interface{}) {
 	l.Log(level.WARNING, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Notice calls the LevelLogger's Log() method with the level.Notice level
 func (l *common) Notice(format string, args ...interface{}) {
 	l.Log(level.NOTICE, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Info calls the LevelLogger's Log() method with the level.Info level
 func (l *common) Info(format string, args ...interface{}) {
 	l.Log(level.INFO, format, args...)
 }
 
-// Convenient alias for logAdapter.Log()
+// Debug calls the LevelLogger's Log() method with the level.Debug level
 func (l *common) Debug(format string, args ...interface{}) {
 	l.Log(level.DEBUG, format, args...)
 }
