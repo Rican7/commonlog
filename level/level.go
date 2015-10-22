@@ -58,9 +58,21 @@ var logLevelNames = map[LogLevel]string{
 	DEBUG:     "DEBUG",
 }
 
+// logLevelNamesInverse is an inverted map of logLevelNames
+var logLevelNamesInverse map[string]LogLevel
+
 /**
  * Functions
  */
+
+// init initializes our package
+func init() {
+	// Initialize our inverted log level name map
+	logLevelNamesInverse = make(map[string]LogLevel, len(logLevelNames))
+	for level, name := range logLevelNames {
+		logLevelNamesInverse[name] = level
+	}
+}
 
 // All returns an array of the standard defined log levels
 func All() []LogLevel {
@@ -75,15 +87,15 @@ func All() []LogLevel {
 // NewLogLevel gets a log level value by a string name
 func NewLogLevel(name string) (LogLevel, error) {
 	// Cleanup the input
-	name = strings.TrimSpace(name)
+	name = strings.ToUpper(strings.TrimSpace(name))
 
-	for level, levelName := range logLevelNames {
-		if strings.EqualFold(name, levelName) {
-			return LogLevel(level), nil
-		}
+	level, ok := logLevelNamesInverse[name]
+
+	if !ok {
+		return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
 	}
 
-	return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
+	return level, nil
 }
 
 // IsValid checks if a log level is valid based on the standard defined levels
