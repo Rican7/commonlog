@@ -46,8 +46,8 @@ const (
  * Variables
  */
 
-// logLevels is a map of log level constants to their string names
-var logLevels = []string{
+// logLevelNames is a map of log level constants to their string names
+var logLevelNames = map[LogLevel]string{
 	EMERGENCY: "EMERGENCY",
 	ALERT:     "ALERT",
 	CRITICAL:  "CRITICAL",
@@ -62,12 +62,22 @@ var logLevels = []string{
  * Functions
  */
 
+// All returns an array of the standard defined log levels
+func All() []LogLevel {
+	all := make([]LogLevel, len(logLevelNames))
+	for k := range logLevelNames {
+		all[k] = k
+	}
+
+	return all
+}
+
 // NewLogLevel gets a log level value by a string name
 func NewLogLevel(name string) (LogLevel, error) {
 	// Cleanup the input
 	name = strings.TrimSpace(name)
 
-	for level, levelName := range logLevels {
+	for level, levelName := range logLevelNames {
 		if strings.EqualFold(name, levelName) {
 			return LogLevel(level), nil
 		}
@@ -78,7 +88,7 @@ func NewLogLevel(name string) (LogLevel, error) {
 
 // IsValid checks if a log level is valid based on the standard defined levels
 func (l LogLevel) IsValid() (bool, error) {
-	if int(l) >= len(logLevels) {
+	if _, ok := logLevelNames[l]; !ok {
 		return false, &InvalidLogLevelError{InvalidValue: &l}
 	}
 
@@ -91,7 +101,7 @@ func (l LogLevel) String() string {
 		return err.Error()
 	}
 
-	return logLevels[l]
+	return logLevelNames[l]
 }
 
 // Error satisfies the error interface by returning a string message
