@@ -106,12 +106,14 @@ func (l LogLevel) String() string {
 
 // Error satisfies the error interface by returning a string message
 func (e InvalidLogLevelError) Error() string {
+	msg := "Unknown error"
+
 	if nil != e.InvalidValue {
-		return "Invalid log level constant. Must be out of range."
+		msg = "Invalid log level constant. Must be out of range."
 
 	} else if nil != e.InvalidName {
-		return "Invalid log level name. No log level exists with that given name."
+		msg = "Invalid log level name. No log level exists with that given name."
 	}
 
-	return ""
+	return msg
 }
