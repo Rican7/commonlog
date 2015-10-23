@@ -23,17 +23,27 @@ import (
 // preformattedLevelFormat is the level format before final formatting
 const preformattedLevelFormat = "%%-%ds"
 
-// levelDelimiter defines the delimiter used for the level prefix
-const levelDelimiter = ":"
+// DefaultDelimiter defines the default delimiter used for the level prefix
+const DefaultDelimiter = ':'
+
+// DefaultPadding defines the default padding used for the level prefix
+const DefaultPadding = "\t"
 
 /**
  * Types
  */
 
+type delegate struct {
+	commonlog.LevelLogger
+
+	prefix    string
+	delimiter rune
+	padding   string
+}
+
 type logger struct {
 	commonlog.Logger
-
-	prefix string
+	adaptee commonlog.LevelLogger
 }
 
 /**
@@ -62,44 +72,58 @@ func init() {
 	}
 
 	// Initialize our levelFormat
-	levelFormat = fmt.Sprintf(preformattedLevelFormat, maxLevelNameLength)
+	levelFormat = fmt.Sprintf(
+		preformattedLevelFormat,
+		maxLevelNameLength+1, // Add one for the length of the single rune delimiter
+	)
 }
 
 // New constructs a new instance by injecting an adaptee
-func New(adaptee commonlog.Logger) adapter.LogAdapter {
-	return &logger{
-		Logger: adaptee,
-	}
+func New(adaptee commonlog.LevelLogger) adapter.LogAdapter {
+	return NewWithPrefix(adaptee, "")
 }
 
 // NewWithPrefix constructs a new instance by injecting an adaptee and setting a prefix
-func NewWithPrefix(adaptee commonlog.Logger, prefix string) adapter.LogAdapter {
+func NewWithPrefix(adaptee commonlog.LevelLogger, prefix string) adapter.LogAdapter {
+	return NewWithCustomPresentation(adaptee, prefix, DefaultDelimiter, DefaultPadding)
+}
+
+// NewWithCustomPresentation constructs a new instance by injecting an adaptee
+// and setting options to control the presentation of the level prefix
+func NewWithCustomPresentation(adaptee commonlog.LevelLogger, prefix string, delimiter rune, padding string) adapter.LogAdapter {
 	return &logger{
-		Logger: adaptee,
-		prefix: prefix,
+		Logger: commonlog.NewLogger(
+			&delegate{
+				LevelLogger: adaptee,
+				prefix:      prefix,
+				delimiter:   delimiter,
+				padding:     padding,
+			},
+		),
+		adaptee: adaptee,
 	}
 }
 
 // Adaptee gets the underyling adaptee
 func (l *logger) Adaptee() interface{} {
-	return l.Logger
+	return l.adaptee
 }
 
 // Log an error based on a specified level, a format, and a splat of arguments
-func (l *logger) Log(lvl level.LogLevel, format string, args ...interface{}) {
+func (l *delegate) Log(lvl level.LogLevel, format string, args ...interface{}) {
 	// Validate the passed in level
 	if ok, err := lvl.IsValid(); !ok {
 		panic(err)
 	}
 
 	// Prepend our level format
-	format = "%s" + levelFormat + format
+	format = "%s" + levelFormat + "%s" + format
 
 	// Define our level string with our delimiter
-	lvlString := lvl.String() + levelDelimiter
+	lvlString := lvl.String() + string(l.delimiter)
 
 	// Prepend the prefix and level string to our formatter args
-	args = append([]interface{}{l.prefix, lvlString}, args...)
+	args = append([]interface{}{l.prefix, lvlString, l.padding}, args...)
 
-	l.Logger.Log(lvl, format, args...)
+	l.LevelLogger.Log(lvl, format, args...)
 }
