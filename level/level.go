@@ -46,8 +46,8 @@ const (
  * Variables
  */
 
-// logLevels is a map of log level constants to their string names
-var logLevels = []string{
+// logLevelNames is a map of log level constants to their string names
+var logLevelNames = map[LogLevel]string{
 	EMERGENCY: "EMERGENCY",
 	ALERT:     "ALERT",
 	CRITICAL:  "CRITICAL",
@@ -58,27 +58,49 @@ var logLevels = []string{
 	DEBUG:     "DEBUG",
 }
 
+// logLevelNamesInverse is an inverted map of logLevelNames
+var logLevelNamesInverse map[string]LogLevel
+
 /**
  * Functions
  */
 
+// init initializes the package
+func init() {
+	// Initialize our inverted log level name map
+	logLevelNamesInverse = make(map[string]LogLevel, len(logLevelNames))
+	for level, name := range logLevelNames {
+		logLevelNamesInverse[name] = level
+	}
+}
+
+// All returns an array of the standard defined log levels
+func All() []LogLevel {
+	all := make([]LogLevel, len(logLevelNames))
+	for k := range logLevelNames {
+		all[k] = k
+	}
+
+	return all
+}
+
 // NewLogLevel gets a log level value by a string name
 func NewLogLevel(name string) (LogLevel, error) {
 	// Cleanup the input
-	name = strings.TrimSpace(name)
+	name = strings.ToUpper(strings.TrimSpace(name))
 
-	for level, levelName := range logLevels {
-		if strings.EqualFold(name, levelName) {
-			return LogLevel(level), nil
-		}
+	level, ok := logLevelNamesInverse[name]
+
+	if !ok {
+		return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
 	}
 
-	return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
+	return level, nil
 }
 
 // IsValid checks if a log level is valid based on the standard defined levels
 func (l LogLevel) IsValid() (bool, error) {
-	if int(l) >= len(logLevels) {
+	if _, ok := logLevelNames[l]; !ok {
 		return false, &InvalidLogLevelError{InvalidValue: &l}
 	}
 
@@ -91,17 +113,19 @@ func (l LogLevel) String() string {
 		return err.Error()
 	}
 
-	return logLevels[l]
+	return logLevelNames[l]
 }
 
 // Error satisfies the error interface by returning a string message
 func (e InvalidLogLevelError) Error() string {
+	msg := "Unknown error"
+
 	if nil != e.InvalidValue {
-		return "Invalid log level constant. Must be out of range."
+		msg = "Invalid log level constant. Must be out of range."
 
 	} else if nil != e.InvalidName {
-		return "Invalid log level name. No log level exists with that given name."
+		msg = "Invalid log level name. No log level exists with that given name."
 	}
 
-	return ""
+	return msg
 }
