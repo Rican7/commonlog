@@ -57,5 +57,9 @@ func (a *delegate) Log(lvl level.LogLevel, format string, args ...interface{}) {
 
 	formatted := fmt.Sprintf(format, args...)
 
+	if len(formatted) == 0 || formatted[len(formatted)-1] != '\n' {
+		formatted += "\n"
+	}
+
 	a.Write([]byte(formatted))
 }
