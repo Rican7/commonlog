@@ -65,7 +65,7 @@ var logLevelNamesInverse map[string]LogLevel
  * Functions
  */
 
-// init initializes our package
+// init initializes the package
 func init() {
 	// Initialize our inverted log level name map
 	logLevelNamesInverse = make(map[string]LogLevel, len(logLevelNames))
