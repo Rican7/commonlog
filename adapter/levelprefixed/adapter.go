@@ -23,8 +23,11 @@ import (
 // preformattedLevelFormat is the level format before final formatting
 const preformattedLevelFormat = "%%-%ds"
 
-// levelDelimiter defines the delimiter used for the level prefix
-const levelDelimiter = ":"
+// DefaultDelimiter defines the default delimiter used for the level prefix
+const DefaultDelimiter = ':'
+
+// DefaultPadding defines the default padding used for the level prefix
+const DefaultPadding = "\t"
 
 /**
  * Types
@@ -33,7 +36,9 @@ const levelDelimiter = ":"
 type delegate struct {
 	commonlog.LevelLogger
 
-	prefix string
+	prefix    string
+	delimiter rune
+	padding   string
 }
 
 type logger struct {
@@ -67,7 +72,10 @@ func init() {
 	}
 
 	// Initialize our levelFormat
-	levelFormat = fmt.Sprintf(preformattedLevelFormat, maxLevelNameLength)
+	levelFormat = fmt.Sprintf(
+		preformattedLevelFormat,
+		maxLevelNameLength+1, // Add one for the length of the single rune delimiter
+	)
 }
 
 // New constructs a new instance by injecting an adaptee
@@ -77,11 +85,19 @@ func New(adaptee commonlog.LevelLogger) adapter.LogAdapter {
 
 // NewWithPrefix constructs a new instance by injecting an adaptee and setting a prefix
 func NewWithPrefix(adaptee commonlog.LevelLogger, prefix string) adapter.LogAdapter {
+	return NewWithCustomPresentation(adaptee, prefix, DefaultDelimiter, DefaultPadding)
+}
+
+// NewWithCustomPresentation constructs a new instance by injecting an adaptee
+// and setting options to control the presentation of the level prefix
+func NewWithCustomPresentation(adaptee commonlog.LevelLogger, prefix string, delimiter rune, padding string) adapter.LogAdapter {
 	return &logger{
 		Logger: commonlog.NewLogger(
 			&delegate{
 				LevelLogger: adaptee,
 				prefix:      prefix,
+				delimiter:   delimiter,
+				padding:     padding,
 			},
 		),
 		adaptee: adaptee,
@@ -101,13 +117,13 @@ func (l *delegate) Log(lvl level.LogLevel, format string, args ...interface{}) {
 	}
 
 	// Prepend our level format
-	format = "%s" + levelFormat + format
+	format = "%s" + levelFormat + "%s" + format
 
 	// Define our level string with our delimiter
-	lvlString := lvl.String() + levelDelimiter
+	lvlString := lvl.String() + string(l.delimiter)
 
 	// Prepend the prefix and level string to our formatter args
-	args = append([]interface{}{l.prefix, lvlString}, args...)
+	args = append([]interface{}{l.prefix, lvlString, l.padding}, args...)
 
 	l.LevelLogger.Log(lvl, format, args...)
 }
