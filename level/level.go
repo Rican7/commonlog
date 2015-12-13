@@ -42,6 +42,9 @@ const (
 	DEBUG
 )
 
+// errorValue defines the value returned for failed log level creations
+const errorValue = ^LogLevel(0)
+
 /**
  * Variables
  */
@@ -92,7 +95,7 @@ func NewLogLevel(name string) (LogLevel, error) {
 	level, ok := logLevelNamesInverse[name]
 
 	if !ok {
-		return ^LogLevel(0), &InvalidLogLevelError{InvalidName: &name}
+		return errorValue, &InvalidLogLevelError{InvalidName: &name}
 	}
 
 	return level, nil
