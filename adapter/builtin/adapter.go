@@ -20,11 +20,13 @@ import (
  * Types
  */
 
-type adapted log.Logger
+type delegate struct {
+	*log.Logger
+}
 
 type logAdapter struct {
 	commonlog.Logger
-	adaptee *adapted
+	adaptee *delegate
 }
 
 /**
@@ -33,11 +35,11 @@ type logAdapter struct {
 
 // New constructs a new instance by injecting an adaptee
 func New(adaptee *log.Logger) adapter.LogAdapter {
-	adapted := adapted(*adaptee)
+	adapted := &delegate{adaptee}
 
 	return &logAdapter{
-		commonlog.NewLogger(&adapted),
-		&adapted,
+		commonlog.NewLogger(adapted),
+		adapted,
 	}
 }
 
@@ -50,41 +52,32 @@ func NewWithSetup(out io.Writer, prefix string, flag int) adapter.LogAdapter {
 
 // Adaptee gets the underyling adaptee
 func (a *logAdapter) Adaptee() interface{} {
-	return a.adaptee
+	return a.adaptee.Logger
 }
 
 // Log an error based on a specified level, a format, and a splat of arguments
-func (a *adapted) Log(lvl level.LogLevel, format string, args ...interface{}) {
+func (a *delegate) Log(lvl level.LogLevel, format string, args ...interface{}) {
 	// Validate the passed in level
 	if ok, err := lvl.IsValid(); !ok {
 		panic(err)
 	}
 
-	adaptee := (*log.Logger)(a)
-
 	switch lvl {
 	case level.EMERGENCY:
-		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.ALERT:
-		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.CRITICAL:
-		// TODO: Handle this level once a generic log method is in the log.Logger
-		adaptee.Fatalf(format, args...)
+		a.Fatalf(format, args...)
 	case level.ERROR:
-		// TODO: Handle this level once a generic log method is in the log.Logger
-		adaptee.Panicf(format, args...)
+		a.Panicf(format, args...)
 	case level.WARNING:
-		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.NOTICE:
-		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.INFO:
-		// TODO: Handle this level once a generic log method is in the log.Logger
 		fallthrough
 	case level.DEBUG:
-		adaptee.Printf(format, args...)
+		a.Printf(format, args...)
 	}
 }
