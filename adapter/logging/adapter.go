@@ -63,14 +63,14 @@ func (a *adapted) Log(lvl level.LogLevel, format string, args ...interface{}) {
 	case level.CRITICAL:
 		adaptee.Critical(format, args...)
 	case level.ERROR:
-		adaptee.Error(format, args...)
+		adaptee.Errorf(format, args...)
 	case level.WARNING:
-		adaptee.Warning(format, args...)
+		adaptee.Warningf(format, args...)
 	case level.NOTICE:
-		adaptee.Notice(format, args...)
+		adaptee.Noticef(format, args...)
 	case level.INFO:
-		adaptee.Info(format, args...)
+		adaptee.Infof(format, args...)
 	case level.DEBUG:
-		adaptee.Debug(format, args...)
+		adaptee.Debugf(format, args...)
 	}
 }
