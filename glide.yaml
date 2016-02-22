@@ -1,0 +1,4 @@
+package: github.com/Rican7/commonlog
+import:
+- package: github.com/golang/glog
+- package: github.com/op/go-logging
