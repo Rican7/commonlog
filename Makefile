@@ -5,29 +5,29 @@ install:
 	go install
 
 install-deps:
-	go get -d -t ./...
+	glide install
 
 install-deps-dev: install-deps
 	go get github.com/golang/lint/golint
 
 update-deps:
-	go get -d -t -u ./...
+	glide update
 
 update-deps-dev: update-deps
 	go get -u github.com/golang/lint/golint
 
 test:
-	go test -v ./...
+	go test -v $$(glide novendor)
 
 test-with-coverage:
-	go test -cover ./...
+	go test -cover $$(glide novendor)
 
 test-with-coverage-formatted:
-	go test -cover ./... | column -t | sort -r
+	go test -cover $$(glide novendor) | column -t | sort -r
 
 lint: install-deps-dev
 	errors=$$(gofmt -l .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
-	errors=$$(golint -min_confidence=0.3 ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+	errors=$$(glide novendor | xargs -n 1 golint -min_confidence=0.3); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
 vet:
-	go vet ./...
+	go vet $$(glide novendor)
