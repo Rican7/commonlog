@@ -49,7 +49,7 @@ func TestNewLogger(t *testing.T) {
 	logger := NewLogger(levelLoggerFunc(ll))
 
 	if _, ok := logger.(Logger); !ok {
-		t.Errorf("%v doesn't satisfy the Logger interface", ll)
+		t.Errorf("%v doesn't satisfy the Logger interface", logger)
 	}
 }
 
